@@ -3348,3 +3348,35 @@ a.site-footer-parent:focus-visible { outline: 2px solid var(--green); outline-of
 .dash-cta .btn-white { background: white; color: var(--navy); border: 1px solid white; white-space: nowrap; }
 .dash-cta .btn-white:hover:not(:disabled) { background: var(--light-green); border-color: var(--light-green); }
 .dash-cta .btn-white:disabled { opacity: .7; cursor: default; }
+
+/* ---------- Quick demo login ---------- */
+
+.quick-login { margin-bottom: 4px; }
+
+.quick-login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: var(--gray);
+  font-size: 12px;
+  font-weight: 700;
+}
+.quick-login-divider::before,
+.quick-login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.quick-login .input-wrapper select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--navy);
+  font-size: 14px;
+  cursor: pointer;
+}
