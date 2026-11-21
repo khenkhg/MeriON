@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Navbar from "../components/Navbar";
 import {
   ShieldCheck,
   ShieldAlert,
@@ -75,6 +76,8 @@ export default function Quality() {
   const maxStageQty = Math.max(1, ...byStage.map((s) => s.qty));
 
   return (
+    <>
+    <Navbar />
     <main className="commercial-page">
       <header className="commercial-header">
         <div>
@@ -415,5 +418,6 @@ export default function Quality() {
         </div>
       </section>
     </main>
+    </>
   );
 }
