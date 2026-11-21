@@ -299,12 +299,7 @@ export default function Dashboard() {
     view = {
       subtitle: "Conforming output and quality-related alerts.",
       action: <Link to="/quality" className="btn-primary"><ShieldCheck size={17} /> Open conformity</Link>,
-      stats: [
-        { icon: ShieldCheck, label: "Conforming products", value: products.length, hint: "Registered as conforming" },
-        { icon: AlertTriangle, tone: countType(mine, "quality", "scrap") ? "red" : "green", label: "Defects & scrap alerts", value: countType(mine, "quality", "scrap"), hint: "Open right now" },
-        { icon: Inbox, tone: "blue", label: "Returned products", value: countType(mine, "return"), hint: "Awaiting analysis" },
-        { icon: Timer, tone: "blue", label: "Excessive stay", value: countType(mine, "dwell_nc"), hint: "Non-conforming in stock" },
-      ],
+      stats: [],
       body: (<><ConformityBlock />{alertsBlock()}{latestBlock}</>),
     };
   } else if (role === "HR Manager") {
