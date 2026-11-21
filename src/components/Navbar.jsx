@@ -6,6 +6,7 @@ import { ATELIER_ROLES } from "../data/ateliers";
 import { hasInsights } from "../data/analytics";
 import { hasPredictions } from "../data/predictions";
 import { hasOrders } from "../data/orders";
+import { QUALITY_ROLES } from "../data/conformity";
 import { WORKER_ROLE } from "../data/shifts";
 import AlertBar from "./AlertBar";
 import merionLogo from "../assets/logo-merion.png";
@@ -89,6 +90,12 @@ export default function Navbar() {
           {user && hasOrders(user.role) && (
             <NavLink to="/orders" className={linkClass}>
               Orders
+            </NavLink>
+          )}
+
+          {user && QUALITY_ROLES.includes(user.role) && (
+            <NavLink to="/quality" className={linkClass}>
+              Conformity
             </NavLink>
           )}
 
