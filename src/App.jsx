@@ -16,11 +16,13 @@ import Insights from "./pages/Insights";
 import Predictions from "./pages/Predictions";
 import Orders from "./pages/Orders";
 import MyShifts from "./pages/MyShifts";
+import Quality from "./pages/Quality";
 import { WORKER_ROLE } from "./data/shifts";
 import { OrderProvider } from "./context/OrderContext";
 import { ORDER_ROLES } from "./data/orders";
 import { PREDICTION_ROLES } from "./data/predictions";
 import { INSIGHT_ROLES } from "./data/analytics";
+import { QUALITY_ROLES } from "./data/conformity";
 import { seedDemoDataOnce } from "./data/demoData";
 
 // Fill the demo history before any provider reads localStorage (first launch only)
@@ -84,6 +86,15 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={PREDICTION_ROLES}>
                   <Predictions />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/quality"
+              element={
+                <ProtectedRoute allowedRoles={QUALITY_ROLES}>
+                  <Quality />
                 </ProtectedRoute>
               }
             />
