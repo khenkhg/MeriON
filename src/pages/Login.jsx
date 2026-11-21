@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { demoUsers } from "../data/users";
 import {
   LockKeyhole,
   Mail,
@@ -21,6 +22,22 @@ const sideItems = [
   { icon: Users, color: "#3b82f6", text: "Teams and management, connected" },
   { icon: ShieldCheck, color: "#f43f5e", text: "Access based on your role" },
 ];
+
+// ---- Demo accounts for the quick-login dropdown
+const isWorker = (u) => u.role === "Worker";
+const isChef = (u) => u.role.startsWith("Atelier");
+
+const accountGroups = [
+  {
+    label: "Management",
+    users: demoUsers.filter((u) => !isWorker(u) && !isChef(u)),
+  },
+  { label: "Atelier heads", users: demoUsers.filter(isChef) },
+  { label: "Workers", users: demoUsers.filter(isWorker) },
+];
+
+const optionLabel = (u) =>
+  isWorker(u) ? `${u.name} (Atelier ${u.atelier})` : `${u.name} (${u.role})`;
 
 export default function Login() {
   const { login } = useAuth();
@@ -43,6 +60,20 @@ export default function Login() {
       navigate("/");
     } else {
       setError("Invalid email or password. Please try again.");
+    }
+  };
+
+  // Sign in directly with the account picked in the dropdown
+  const handleQuickLogin = (e) => {
+    const user = demoUsers.find((u) => String(u.id) === e.target.value);
+    if (!user) return;
+
+    setError("");
+
+    if (login(user.email, user.password)) {
+      navigate("/");
+    } else {
+      setError("Could not sign in with this account.");
     }
   };
 
@@ -71,6 +102,32 @@ export default function Login() {
             {successMessage}
           </p>
         )}
+
+        <div className="quick-login">
+          <label htmlFor="quick-account">Quick sign in with a demo account</label>
+
+          <div className="input-wrapper">
+            <Users size={19} />
+            <select id="quick-account" value="" onChange={handleQuickLogin}>
+              <option value="" disabled>
+                Select an account to sign in…
+              </option>
+              {accountGroups.map((g) => (
+                <optgroup key={g.label} label={g.label}>
+                  {g.users.map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {optionLabel(u)}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </div>
+
+          <div className="quick-login-divider">
+            <span>or sign in with your email</span>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="email">Email address</label>
