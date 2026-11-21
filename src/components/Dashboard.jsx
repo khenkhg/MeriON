@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
   PackageCheck, Weight, Factory, Bell, AlertTriangle, Wrench, Timer, Users,
-  ShieldCheck, Truck, Boxes, Inbox, ArrowRight, CheckCircle2, ScanBarcode, ClipboardList,
+  ShieldCheck, Truck, Boxes, Inbox, ArrowRight, CheckCircle2, ScanBarcode, ClipboardList, PackageX,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useBarcode } from "../context/BarcodeContext";
@@ -9,6 +9,7 @@ import { useAlerts } from "../context/AlertContext";
 import { getAtelierNumber, ATELIER_NAMES } from "../data/ateliers";
 import { alertsForUser, machineStatuses, mttrMinutes, formatDuration } from "../data/alerts";
 import AtelierStockPanel from "../components/AtelierStockPanel";
+import { useConformity } from "../data/conformity";
 
 const detail = (a, label) => a.details.find((d) => d.label === label)?.value || "—";
 const tons = (kg) => `${(kg / 1000).toFixed(2)} t`;
@@ -144,6 +145,30 @@ function ClientBars({ clients }) {
   );
 }
 
+/* ---------- Quality Manager: conformity shortcut + counters ---------- */
+
+function ConformityBlock() {
+  const { totals } = useConformity();
+  const n = (v) => v.toLocaleString("en-US");
+  return (
+    <>
+      <div className="dash-cta">
+        <div>
+          <strong>Conformity follow-up</strong>
+          <span>Declare products that turned non conforme and track the ones found at the client.</span>
+        </div>
+        <Link to="/quality" className="btn-white">Open conformity <ArrowRight size={17} /></Link>
+      </div>
+
+      <section className="commercial-stats">
+        <Stat icon={PackageX} tone="red" label="Non conforme in production" value={n(totals.ncProduction)} hint="Removed from the available count" />
+        <Stat icon={Boxes} tone="blue" label="Available conforme" value={n(totals.available)} hint="Produced - delivered - non conforme" />
+        <Stat icon={Truck} tone="amber" label="Non conforme after delivery" value={n(totals.ncClient)} hint="Found once at the client" />
+      </section>
+    </>
+  );
+}
+
 /* ---------- the dashboard ---------- */
 
 export default function Dashboard() {
@@ -273,13 +298,14 @@ export default function Dashboard() {
   } else if (role === "Quality Manager") {
     view = {
       subtitle: "Conforming output and quality-related alerts.",
+      action: <Link to="/quality" className="btn-primary"><ShieldCheck size={17} /> Open conformity</Link>,
       stats: [
         { icon: ShieldCheck, label: "Conforming products", value: products.length, hint: "Registered as conforming" },
         { icon: AlertTriangle, tone: countType(mine, "quality", "scrap") ? "red" : "green", label: "Defects & scrap alerts", value: countType(mine, "quality", "scrap"), hint: "Open right now" },
         { icon: Inbox, tone: "blue", label: "Returned products", value: countType(mine, "return"), hint: "Awaiting analysis" },
         { icon: Timer, tone: "blue", label: "Excessive stay", value: countType(mine, "dwell_nc"), hint: "Non-conforming in stock" },
       ],
-      body: (<>{alertsBlock()}{latestBlock}</>),
+      body: (<><ConformityBlock />{alertsBlock()}{latestBlock}</>),
     };
   } else if (role === "HR Manager") {
     const staff = mine.filter((a) => a.typeId === "staff");
